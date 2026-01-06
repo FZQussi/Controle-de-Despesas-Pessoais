@@ -5,10 +5,11 @@ import pt.com.despesas.repository.DespesaRepository;
 
 import java.util.List;
 
-public class DespesaService {
+public class DespesaService implements DespesaServiceInterface {
 
     private final DespesaRepository repository = new DespesaRepository();
 
+    @Override
     public void adicionarDespesa(Despesa despesa) {
         if (despesa.getValor() <= 0) {
             throw new IllegalArgumentException("O valor da despesa deve ser positivo");
@@ -16,6 +17,7 @@ public class DespesaService {
         repository.salvar(despesa);
     }
 
+    @Override
     public List<Despesa> listarDespesas() {
         return repository.listar();
     }

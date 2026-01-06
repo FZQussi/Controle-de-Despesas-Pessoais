@@ -3,6 +3,7 @@ package pt.com.despesas.repository;
 import pt.com.despesas.model.Despesa;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,12 @@ public class DespesaRepository {
     private static final String ARQUIVO = "src/main/resources/despesas.csv";
 
     public void salvar(Despesa despesa) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(ARQUIVO, true))) {
+        try (BufferedWriter writer = new BufferedWriter(
+                new OutputStreamWriter(
+                        new FileOutputStream(ARQUIVO, true),
+                        StandardCharsets.UTF_8
+                )
+        )) {
             writer.write(
                 despesa.getDescricao() + "," +
                 despesa.getCategoria() + "," +
@@ -27,7 +33,12 @@ public class DespesaRepository {
     public List<Despesa> listar() {
         List<Despesa> despesas = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(ARQUIVO))) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(ARQUIVO),
+                        StandardCharsets.UTF_8
+                )
+        )) {
             String linha;
             while ((linha = reader.readLine()) != null) {
                 String[] dados = linha.split(",");
