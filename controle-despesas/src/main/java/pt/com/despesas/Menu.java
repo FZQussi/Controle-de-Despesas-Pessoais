@@ -1,6 +1,7 @@
 package pt.com.despesas;
 
 import pt.com.despesas.export.RelatorioCsvExporter;
+import pt.com.despesas.importer.CsvValidationException;
 import pt.com.despesas.importer.RelatorioCsvImporter;
 import pt.com.despesas.model.Despesa;
 import pt.com.despesas.service.DespesaService;
@@ -67,7 +68,11 @@ public class Menu {
                 despesas.size() + " despesas importadas com sucesso."
         );
 
-    } catch (Exception e) {
+    } 
+    catch (CsvValidationException e) {
+    System.out.println("Erro no CSV: " + e.getMessage());
+}
+catch (Exception e) {
         System.out.println("Erro ao importar CSV: " + e.getMessage());
     }
 }

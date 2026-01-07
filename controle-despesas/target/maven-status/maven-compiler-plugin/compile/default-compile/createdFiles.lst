@@ -6,4 +6,5 @@ pt\com\despesas\Menu.class
 pt\com\despesas\repository\DespesaRepository.class
 pt\com\despesas\export\RelatorioCsvExporter.class
 pt\com\despesas\model\Despesa.class
+pt\com\despesas\importer\CsvValidationException.class
 pt\com\despesas\service\DespesaService.class

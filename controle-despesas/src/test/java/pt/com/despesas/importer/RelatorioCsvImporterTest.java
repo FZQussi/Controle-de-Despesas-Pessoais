@@ -32,4 +32,42 @@ class RelatorioCsvImporterTest {
         assertEquals("Mercado", despesas.get(0).getDescricao());
         assertEquals(50, despesas.get(1).getValor());
     }
+    @Test
+void deveFalharQuandoValorForNegativo() throws Exception {
+    Path ficheiro = Files.createTempFile("despesas", ".csv");
+
+    String csv = """
+            Descrição,Categoria,Valor,Data
+            Mercado,Alimentação,-10,2026-01-10
+            """;
+
+    Files.writeString(ficheiro, csv);
+
+    RelatorioCsvImporter importer = new RelatorioCsvImporter();
+
+    assertThrows(
+            CsvValidationException.class,
+            () -> importer.importar(ficheiro)
+    );
+}
+
+@Test
+void deveFalharQuandoDataForInvalida() throws Exception {
+    Path ficheiro = Files.createTempFile("despesas", ".csv");
+
+    String csv = """
+            Descrição,Categoria,Valor,Data
+            Mercado,Alimentação,100,10-01-2026
+            """;
+
+    Files.writeString(ficheiro, csv);
+
+    RelatorioCsvImporter importer = new RelatorioCsvImporter();
+
+    assertThrows(
+            CsvValidationException.class,
+            () -> importer.importar(ficheiro)
+    );
+}
+
 }
