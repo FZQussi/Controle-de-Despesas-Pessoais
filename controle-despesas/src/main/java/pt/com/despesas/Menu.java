@@ -95,11 +95,15 @@ catch (Exception e) {
     RelatorioCsvExporter exporter = new RelatorioCsvExporter();
 
     try {
-        Path ficheiro = exporter.exportar(
-                despesas,
-                yearMonth,
-                Path.of("relatorios")
-        );
+       String diretorioPadrao = pt.com.despesas.config.Config
+        .get("relatorios.diretorio", "relatorios");
+
+Path ficheiro = exporter.exportar(
+        despesas,
+        yearMonth,
+        Path.of(diretorioPadrao)
+);
+
 
         System.out.println("Relatório exportado para: "
                 + ficheiro.toAbsolutePath());
