@@ -4,6 +4,8 @@ import pt.com.despesas.model.Despesa;
 import pt.com.despesas.repository.DespesaRepository;
 
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DespesaService implements DespesaServiceInterface {
 
@@ -21,4 +23,18 @@ public class DespesaService implements DespesaServiceInterface {
     public List<Despesa> listarDespesas() {
         return repository.listar();
     }
+    @Override
+public Map<String, Double> totalPorCategoria() {
+    Map<String, Double> totais = new HashMap<>();
+
+    for (Despesa despesa : repository.listar()) {
+        totais.merge(
+            despesa.getCategoria(),
+            despesa.getValor(),
+            Double::sum
+        );
+    }
+
+    return totais;
+}
 }

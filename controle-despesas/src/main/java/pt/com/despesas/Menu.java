@@ -24,6 +24,7 @@ public class Menu {
             System.out.println("\n=== Controle de Despesas ===");
             System.out.println("1 - Adicionar despesa");
             System.out.println("2 - Listar despesas");
+            System.out.println("3 - Relatório por categoria");
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
 
@@ -32,12 +33,26 @@ public class Menu {
             switch (opcao) {
                 case 1 -> adicionarDespesa();
                 case 2 -> listarDespesas();
+                case 3 -> mostrarRelatorioPorCategoria();
                 case 0 -> System.out.println("Saindo...");
                 default -> System.out.println("Opção inválida!");
             }
 
         } while (opcao != 0);
     }
+    private void mostrarRelatorioPorCategoria() {
+    var totais = service.totalPorCategoria();
+
+    if (totais.isEmpty()) {
+        System.out.println("Nenhuma despesa registrada.");
+        return;
+    }
+
+    System.out.println("\n--- Total por Categoria ---");
+    totais.forEach((categoria, total) ->
+        System.out.println(categoria + ": " + total)
+    );
+}
 
     private void adicionarDespesa() {
         System.out.print("Descrição: ");
