@@ -1,8 +1,10 @@
 package pt.com.despesas;
 
+import pt.com.despesas.export.RelatorioCsvExporter;
 import pt.com.despesas.model.Despesa;
 import pt.com.despesas.service.DespesaService;
 
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
@@ -27,6 +29,7 @@ public class Menu {
             System.out.println("2 - Listar despesas");
             System.out.println("3 - Relatório por categoria");
             System.out.println("4 - Relatório mensal");
+            System.out.println("5 - Exportar relatório mensal (CSV)");
 
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
@@ -38,6 +41,7 @@ public class Menu {
                 case 2 -> listarDespesas();
                 case 3 -> mostrarRelatorioPorCategoria();
                 case 4 -> relatorioMensal();
+                case 5 -> exportarRelatorioMensal();
 
                 case 0 -> System.out.println("Saindo...");
                 default -> System.out.println("Opção inválida!");
@@ -45,6 +49,39 @@ public class Menu {
 
         } while (opcao != 0);
     }
+    private void exportarRelatorioMensal() {
+    System.out.print("Ano: ");
+    int ano = lerInteiro();
+
+    System.out.print("Mês: ");
+    int mes = lerInteiro();
+
+    YearMonth yearMonth = YearMonth.of(ano, mes);
+    var despesas = service.listarPorMes(yearMonth);
+
+    if (despesas.isEmpty()) {
+        System.out.println("Nenhuma despesa para exportar.");
+        return;
+    }
+
+    RelatorioCsvExporter exporter = new RelatorioCsvExporter();
+
+    try {
+        Path ficheiro = exporter.exportar(
+                despesas,
+                yearMonth,
+                Path.of("relatorios")
+        );
+
+        System.out.println("Relatório exportado para: "
+                + ficheiro.toAbsolutePath());
+
+    } catch (Exception e) {
+        System.out.println("Erro ao exportar relatório: "
+                + e.getMessage());
+    }
+}
+
     private void relatorioMensal() {
     System.out.print("Ano (ex: 2026): ");
     int ano = lerInteiro();
