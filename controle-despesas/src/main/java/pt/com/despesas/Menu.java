@@ -4,6 +4,7 @@ import pt.com.despesas.model.Despesa;
 import pt.com.despesas.service.DespesaService;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,6 +26,8 @@ public class Menu {
             System.out.println("1 - Adicionar despesa");
             System.out.println("2 - Listar despesas");
             System.out.println("3 - Relatório por categoria");
+            System.out.println("4 - Relatório mensal");
+
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
 
@@ -34,12 +37,37 @@ public class Menu {
                 case 1 -> adicionarDespesa();
                 case 2 -> listarDespesas();
                 case 3 -> mostrarRelatorioPorCategoria();
+                case 4 -> relatorioMensal();
+
                 case 0 -> System.out.println("Saindo...");
                 default -> System.out.println("Opção inválida!");
             }
 
         } while (opcao != 0);
     }
+    private void relatorioMensal() {
+    System.out.print("Ano (ex: 2026): ");
+    int ano = lerInteiro();
+
+    System.out.print("Mês (1-12): ");
+    int mes = lerInteiro();
+
+    YearMonth yearMonth = YearMonth.of(ano, mes);
+
+    double total = service.totalDoMes(yearMonth);
+    var despesas = service.listarPorMes(yearMonth);
+
+    System.out.println("\n--- Relatório " + yearMonth + " ---");
+
+    if (despesas.isEmpty()) {
+        System.out.println("Nenhuma despesa encontrada.");
+        return;
+    }
+
+    despesas.forEach(System.out::println);
+    System.out.println("Total do mês: " + total);
+}
+
     private void mostrarRelatorioPorCategoria() {
     var totais = service.totalPorCategoria();
 

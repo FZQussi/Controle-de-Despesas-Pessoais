@@ -2,14 +2,27 @@ package pt.com.despesas.service;
 
 import pt.com.despesas.model.Despesa;
 import pt.com.despesas.repository.DespesaRepository;
+import pt.com.despesas.repository.DespesaRepositoryInterface;
 
-import java.util.List;
+import java.time.YearMonth;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class DespesaService implements DespesaServiceInterface {
 
-    private final DespesaRepository repository = new DespesaRepository();
+    private final DespesaRepositoryInterface repository;
+
+    // 👉 Construtor usado em PRODUÇÃO (Main / Menu)
+    public DespesaService() {
+        this.repository = new DespesaRepository();
+    }
+
+    // 👉 Construtor usado em TESTES
+    public DespesaService(DespesaRepositoryInterface repository) {
+        this.repository = repository;
+    }
 
     @Override
     public void adicionarDespesa(Despesa despesa) {
@@ -23,18 +36,33 @@ public class DespesaService implements DespesaServiceInterface {
     public List<Despesa> listarDespesas() {
         return repository.listar();
     }
-    @Override
-public Map<String, Double> totalPorCategoria() {
-    Map<String, Double> totais = new HashMap<>();
 
-    for (Despesa despesa : repository.listar()) {
-        totais.merge(
-            despesa.getCategoria(),
-            despesa.getValor(),
-            Double::sum
-        );
+    @Override
+    public Map<String, Double> totalPorCategoria() {
+        Map<String, Double> totais = new HashMap<>();
+
+        for (Despesa despesa : repository.listar()) {
+            totais.merge(
+                despesa.getCategoria(),
+                despesa.getValor(),
+                Double::sum
+            );
+        }
+        return totais;
     }
 
-    return totais;
-}
+    @Override
+    public double totalDoMes(YearMonth mes) {
+        return repository.listar().stream()
+                .filter(d -> YearMonth.from(d.getData()).equals(mes))
+                .mapToDouble(Despesa::getValor)
+                .sum();
+    }
+
+    @Override
+    public List<Despesa> listarPorMes(YearMonth mes) {
+        return repository.listar().stream()
+                .filter(d -> YearMonth.from(d.getData()).equals(mes))
+                .collect(Collectors.toList());
+    }
 }

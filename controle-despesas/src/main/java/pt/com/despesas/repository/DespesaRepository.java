@@ -7,7 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DespesaRepository {
+public class DespesaRepository implements DespesaRepositoryInterface {
 
     private static final String ARQUIVO = "src/main/resources/despesas.csv";
 
