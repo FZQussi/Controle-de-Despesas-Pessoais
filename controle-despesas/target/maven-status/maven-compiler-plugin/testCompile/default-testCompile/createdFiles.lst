@@ -1,4 +1,5 @@
 pt\com\despesas\service\DespesaServiceTest.class
+pt\com\despesas\importer\RelatorioCsvImporterTest.class
 pt\com\despesas\export\RelatorioCsvExporterTest.class
 pt\com\despesas\AppTest.class
 pt\com\despesas\MenuTest.class

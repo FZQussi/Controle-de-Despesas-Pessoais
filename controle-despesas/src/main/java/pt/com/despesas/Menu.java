@@ -1,6 +1,7 @@
 package pt.com.despesas;
 
 import pt.com.despesas.export.RelatorioCsvExporter;
+import pt.com.despesas.importer.RelatorioCsvImporter;
 import pt.com.despesas.model.Despesa;
 import pt.com.despesas.service.DespesaService;
 
@@ -30,6 +31,7 @@ public class Menu {
             System.out.println("3 - Relatório por categoria");
             System.out.println("4 - Relatório mensal");
             System.out.println("5 - Exportar relatório mensal (CSV)");
+            System.out.println("6 - Importar despesas de CSV");
 
             System.out.println("0 - Sair");
             System.out.print("Escolha uma opção: ");
@@ -42,6 +44,7 @@ public class Menu {
                 case 3 -> mostrarRelatorioPorCategoria();
                 case 4 -> relatorioMensal();
                 case 5 -> exportarRelatorioMensal();
+                case 6 -> importarCsv();
 
                 case 0 -> System.out.println("Saindo...");
                 default -> System.out.println("Opção inválida!");
@@ -49,6 +52,26 @@ public class Menu {
 
         } while (opcao != 0);
     }
+    private void importarCsv() {
+    System.out.print("Caminho do ficheiro CSV: ");
+    String caminho = scanner.nextLine();
+
+    RelatorioCsvImporter importer = new RelatorioCsvImporter();
+
+    try {
+        var despesas = importer.importar(Path.of(caminho));
+
+        despesas.forEach(service::adicionarDespesa);
+
+        System.out.println(
+                despesas.size() + " despesas importadas com sucesso."
+        );
+
+    } catch (Exception e) {
+        System.out.println("Erro ao importar CSV: " + e.getMessage());
+    }
+}
+
     private void exportarRelatorioMensal() {
     System.out.print("Ano: ");
     int ano = lerInteiro();

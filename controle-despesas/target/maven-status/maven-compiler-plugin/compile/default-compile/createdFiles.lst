@@ -1,6 +1,7 @@
 pt\com\despesas\Main.class
 pt\com\despesas\service\DespesaServiceInterface.class
 pt\com\despesas\repository\DespesaRepositoryInterface.class
+pt\com\despesas\importer\RelatorioCsvImporter.class
 pt\com\despesas\Menu.class
 pt\com\despesas\repository\DespesaRepository.class
 pt\com\despesas\export\RelatorioCsvExporter.class
