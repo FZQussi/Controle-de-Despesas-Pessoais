@@ -15,28 +15,32 @@ public class JsonStorage {
 
     private final Path ficheiro;
     private final ObjectMapper mapper;
+    private final BackupService backupService;
 
     public JsonStorage(Path ficheiro) {
         this.ficheiro = ficheiro;
         this.mapper = new ObjectMapper()
-                .findAndRegisterModules() // suporte a LocalDate
+                .findAndRegisterModules()
                 .enable(SerializationFeature.INDENT_OUTPUT);
+
+        Path backupDir = ficheiro.getParent().resolve("backups");
+        this.backupService = new BackupService(backupDir);
     }
 
-    // -------------------------
-    // Guardar despesas em JSON
-    // -------------------------
     public void guardar(List<Despesa> despesas) throws IOException {
+
         if (ficheiro.getParent() != null) {
             Files.createDirectories(ficheiro.getParent());
         }
+
+        // 🔐 cria backup antes de sobrescrever
+        backupService.criarBackup(ficheiro);
+
         mapper.writeValue(ficheiro.toFile(), despesas);
     }
 
-    // -------------------------
-    // Carregar despesas do JSON
-    // -------------------------
     public List<Despesa> carregar() throws IOException {
+
         if (!Files.exists(ficheiro)) {
             return new ArrayList<>();
         }
