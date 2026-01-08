@@ -1,0 +1,15 @@
+package pt.com.despesas.config;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+class ConfigTest {
+
+    @Test
+    void deveLerDiretorioPadrao() {
+        String dir = Config.get("relatorios.diretorio", "relatorios");
+        assertEquals("relatorios", dir);
+    }
+}
+
