@@ -1,5 +1,7 @@
 package pt.com.despesas.repository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pt.com.despesas.model.Despesa;
 import pt.com.despesas.storage.JsonStorage;
 
@@ -8,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DespesaRepositoryJson implements DespesaRepositoryInterface {
+
+    private static final Logger log =
+            LoggerFactory.getLogger(DespesaRepositoryJson.class);
 
     private final JsonStorage storage;
     private final List<Despesa> despesas;
@@ -21,10 +26,16 @@ public class DespesaRepositoryJson implements DespesaRepositoryInterface {
     // Carregamento inicial
     // -------------------------
     private List<Despesa> carregarInicial() {
+
+        log.info("A carregar despesas do armazenamento JSON");
+
         try {
-            return new ArrayList<>(storage.carregar());
+            List<Despesa> carregadas = storage.carregar();
+            log.info("Carga concluída: {} despesas carregadas", carregadas.size());
+            return new ArrayList<>(carregadas);
+
         } catch (IOException e) {
-            System.out.println("Aviso: falha ao carregar despesas do JSON");
+            log.warn("Falha ao carregar despesas do JSON. Iniciando com lista vazia.", e);
             return new ArrayList<>();
         }
     }
@@ -34,6 +45,13 @@ public class DespesaRepositoryJson implements DespesaRepositoryInterface {
     // -------------------------
     @Override
     public void salvar(Despesa despesa) {
+
+        log.debug("A adicionar despesa: {} | {} | {}",
+                despesa.getDescricao(),
+                despesa.getCategoria(),
+                despesa.getValor()
+        );
+
         despesas.add(despesa);
         persistir();
     }
@@ -43,6 +61,8 @@ public class DespesaRepositoryJson implements DespesaRepositoryInterface {
     // -------------------------
     @Override
     public List<Despesa> listar() {
+
+        log.debug("A listar despesas (total: {})", despesas.size());
         return new ArrayList<>(despesas);
     }
 
@@ -50,9 +70,15 @@ public class DespesaRepositoryJson implements DespesaRepositoryInterface {
     // Persistência automática
     // -------------------------
     private void persistir() {
+
+        log.debug("A persistir {} despesas em JSON", despesas.size());
+
         try {
             storage.guardar(despesas);
+            log.info("Despesas guardadas com sucesso em JSON");
+
         } catch (IOException e) {
+            log.error("Erro ao salvar despesas em JSON", e);
             throw new RuntimeException("Erro ao salvar despesas em JSON", e);
         }
     }
