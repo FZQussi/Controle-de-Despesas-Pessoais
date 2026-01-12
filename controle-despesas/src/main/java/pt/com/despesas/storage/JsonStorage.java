@@ -50,4 +50,11 @@ public class JsonStorage {
                 new TypeReference<List<Despesa>>() {}
         );
     }
+     public void restaurar(Path backup) throws IOException {
+        backupService.restaurarBackup(backup, ficheiro);
+    }
+
+    public List<Path> listarBackups() throws IOException {
+        return backupService.listarBackups();
+    }
 }
